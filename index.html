@@ -20,7 +20,7 @@
 
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">2. 自定义节点名称 <span class="text-slate-500 font-normal">(可选，留空则自动识别)</span></label>
-                <input type="text" id="customNameInput" placeholder="例如：美国-8.29到期" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                <input type="text" id="customNameInput" placeholder="例如：美国8.31到期" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
             </div>
         </div>
 
@@ -59,11 +59,11 @@
 
     <script>
         window.onload = function() {
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#data=')) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataParam = urlParams.get('data');
+            if (dataParam) {
                 try {
-                    const base64Data = hash.substring(6);
-                    const jsonString = decodeURIComponent(escape(atob(base64Data)));
+                    const jsonString = decodeURIComponent(escape(atob(dataParam)));
                     const data = JSON.parse(jsonString);
                     
                     const yaml = buildYaml(data.server, data.port, data.username, data.password, data.nodeName);
@@ -133,15 +133,15 @@ proxy-groups:
     interval: 300
     lazy: false
   - type: select
-    name: 🐟 别管这个
+    name: 🐟 漏网之鱼
     proxies:
       - 🚀 节点选择
       - DIRECT
       - REJECT
 
 rules:
-  - DOMAIN,ipwho.is,🐟 别管这个
-  - MATCH,🐟 别管这个`;
+  - DOMAIN,ipwho.is,🐟 漏网之鱼
+  - MATCH,🐟 漏网之鱼`;
 
             return yaml;
         }
@@ -198,8 +198,8 @@ rules:
                 const payload = { server, port, username, password, nodeName };
                 const base64Payload = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
                 
-                const baseUrl = window.location.href.split('#')[0];
-                const subUrl = baseUrl + '#data=' + base64Payload;
+                const baseUrl = window.location.href.split('?')[0].split('#')[0];
+                const subUrl = baseUrl + '?data=' + base64Payload;
 
                 document.getElementById('urlBox').style.display = 'block';
                 document.getElementById('subUrlOutput').value = subUrl;
